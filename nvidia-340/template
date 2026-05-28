@@ -1,0 +1,28 @@
+# Template file for 'nvidia340-dkms'
+pkgname=nvidia340-dkms
+version=340.108
+revision=39
+archs="x86_64"
+depends="dkms nvidia340-utils libGL"
+short_desc="NVIDIA driver sources for linux, 340xx legacy branch"
+maintainer="Local User <user@example.com>"
+license="custom:NVIDIA"
+homepage="https://www.nvidia.com/"
+distfiles="https://us.download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}-no-compat32.run"
+checksum=6538bbec53b10f8d20977f9b462052625742e9709ef06e24cf2e55de5d0c55f1620a4bb21396cfd89ebc54c32f921ea17e3e47eaa95abcbc24ecbd144fb89028
+
+do_extract() {
+    sh ${XBPS_SRCDISTDIR}/${pkgname}-${version}/NVIDIA-Linux-x86_64-${version}-no-compat32.run --extract-only
+    mv NVIDIA-Linux-x86_64-${version}-no-compat32/* .
+}
+
+do_install() {
+    vmkdir usr/src/nvidia-${version}
+    cp -dr --no-preserve='ownership' kernel/* ${DESTDIR}/usr/src/nvidia-${version}/
+    cat kernel/uvm/dkms.conf.fragment >> ${DESTDIR}/usr/src/nvidia-${version}/dkms.conf
+
+    vmkdir usr/lib/modprobe.d
+    echo "blacklist nouveau" > ${DESTDIR}/usr/lib/modprobe.d/${pkgname}.conf
+
+    vinstall ${FILESDIR}/20-nvidia.conf 644 usr/share/nvidia-340xx 20-nvidia.conf
+}
