@@ -1,5 +1,5 @@
-# Template file for 'nvidia340-dkms'
-pkgname=nvidia340-dkms
+# Template file for 'nvidia340'
+pkgname=nvidia340
 version=340.108
 revision=39
 archs="x86_64"
